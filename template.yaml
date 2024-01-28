@@ -23,7 +23,7 @@ Resources:
         - x86_64
       MemorySize: 128
       Timeout: 100
-      Description: A simple example includes a HTTP post method to add one item to a DynamoDB table.
+      Description: Calls an Amazon Connect API to make an outbound voice call
       Policies:
         # Add permission to Amazon Connect StartOutboundVoiceContactCommand
         - Statement:
