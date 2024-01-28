@@ -31,7 +31,7 @@ export const outboundCallHandler = async (event) => {
     try {
         const command = new StartOutboundVoiceContactCommand(params);
         data = await client.send(command);
-        console.log("Success - item added or updated", data);
+        console.log("Success - call made", data);
     } catch (err) {
         console.log("Error", err.stack);
         throw err;
