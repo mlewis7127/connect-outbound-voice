@@ -1,0 +1,52 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  connect-outbound-voice
+
+Transform:
+- AWS::Serverless-2016-10-31
+
+# Add parameter section
+Parameters:
+  InstanceId:
+    Type: String
+    Default: "83dfabfe-aced-428a-9595-faab3db13c20"
+    Description: "The ID of the Amazon Connect instance."
+
+Resources:
+
+  outboundCallFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/outbound-call.outboundCallHandler
+      Runtime: nodejs20.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 100
+      Description: A simple example includes a HTTP post method to add one item to a DynamoDB table.
+      Policies:
+        # Add permission to Amazon Connect StartOutboundVoiceContactCommand
+        - Statement:
+            - Sid: ConnectStartOutboundVoiceContactCommand
+              Effect: Allow
+              Action:
+                - connect:StartOutboundVoiceContact
+              Resource:
+                - !Sub "arn:aws:connect:${AWS::Region}:${AWS::AccountId}:instance/${InstanceId}/contact/*"
+      Environment:
+        Variables:
+          # Add environment variables for required information
+          CONTACT_FLOW_ID: "a24c9bb7-062e-45c0-a138-962c4efde045"
+          INSTANCE_ID: !Ref InstanceId
+          QUEUE_ID: "1ef88926-b217-4e12-a877-0f0750d4ebcc"
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /
+            Method: POST
+
+Outputs:
+  WebEndpoint:
+    Description: "API Gateway endpoint URL for Prod stage"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
